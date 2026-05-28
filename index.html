@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CONDUIT</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,600;0,700;1,400&family=Barlow+Condensed:wght@500;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #09090b;
+    --bg2: #111114;
+    --bg3: #18181c;
+    --text: #f0eff0;
+    --text-dim: #7a7880;
+    --teal: #0d9488;
+    --teal-light: #2dd4bf;
+    --teal-dim: #0a2e2b;
+    --line: #1f1f24;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.3;
+  }
+
+  * { position: relative; z-index: 1; }
+
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.75rem 4rem;
+    border-bottom: 1px solid var(--line);
+    animation: fadeDown 0.7s ease both;
+    background: var(--bg);
+  }
+
+  .logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: 0.25em;
+    color: var(--text);
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .nav-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+
+  .nav-cta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--teal-light);
+    border: 1px solid var(--teal);
+    padding: 0.55rem 1.2rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    background: transparent;
+  }
+
+  .nav-cta:hover {
+    background: var(--teal-dim);
+    border-color: var(--teal-light);
+  }
+
+  .hero {
+    padding: 7rem 4rem 5rem;
+    max-width: 1200px;
+    animation: fadeUp 0.9s 0.15s ease both;
+  }
+
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--teal-light);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .hero-label::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--teal);
+  }
+
+  h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(4rem, 9vw, 8.5rem);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 2.5rem;
+    text-transform: uppercase;
+  }
+
+  h1 .accent { color: var(--teal-light); }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    max-width: 520px;
+    font-weight: 400;
+  }
+
+  .hero-sub strong { color: var(--text); font-weight: 600; }
+
+  .integrations-strip {
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 1.5rem 4rem;
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    overflow: hidden;
+    animation: fadeUp 0.9s 0.3s ease both;
+    background: var(--bg2);
+  }
+
+  .strip-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .strip-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--line);
+    flex-shrink: 0;
+  }
+
+  .integration-items {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .integration-item {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    transition: all 0.2s ease;
+  }
+
+  .integration-item:hover {
+    color: var(--teal-light);
+    border-color: var(--teal);
+  }
+
+  .connect-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--line);
+    animation: fadeUp 0.9s 0.4s ease both;
+  }
+
+  .connect-left {
+    padding: 5rem 4rem;
+    border-right: 1px solid var(--line);
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--text-dim);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+  }
+
+  .connect-left h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1.05;
+    margin-bottom: 1.5rem;
+  }
+
+  .connect-left p {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    line-height: 1.75;
+  }
+
+  .connect-right {
+    padding: 5rem 4rem;
+  }
+
+  .step-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .step-item {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 1.25rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--line);
+    align-items: start;
+    transition: all 0.2s ease;
+    cursor: default;
+  }
+
+  .step-item:last-child { border-bottom: none; }
+  .step-item:hover .step-num { color: var(--teal-light); }
+
+  .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    padding-top: 0.2rem;
+    transition: color 0.2s ease;
+  }
+
+  .step-content h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.4rem;
+  }
+
+  .step-content p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-bottom: 1px solid var(--line);
+    animation: fadeUp 0.9s 0.5s ease both;
+  }
+
+  .stat {
+    padding: 3rem 4rem;
+    border-right: 1px solid var(--line);
+    transition: background 0.25s ease;
+  }
+
+  .stat:last-child { border-right: none; }
+  .stat:hover { background: var(--bg2); }
+
+  .stat-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+    line-height: 1;
+  }
+
+  .stat-num span { color: var(--teal-light); }
+
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--text-dim);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-desc {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    line-height: 1.55;
+  }
+
+  .cta-section {
+    padding: 6rem 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    animation: fadeUp 0.9s 0.6s ease both;
+  }
+
+  .cta-left h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1.0;
+    margin-bottom: 0.75rem;
+  }
+
+  .cta-left h2 span { color: var(--teal-light); }
+
+  .cta-left p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+  }
+
+  .waitlist-form {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--teal);
+    overflow: hidden;
+  }
+
+  .waitlist-form input {
+    background: var(--bg2);
+    border: none;
+    outline: none;
+    padding: 1rem 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text);
+    width: 280px;
+    letter-spacing: 0.04em;
+  }
+
+  .waitlist-form input::placeholder { color: var(--text-dim); }
+
+  .waitlist-form button {
+    background: var(--teal);
+    border: none;
+    padding: 1rem 1.5rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--bg);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .waitlist-form button:hover { background: var(--teal-light); }
+
+  footer {
+    padding: 1.75rem 4rem;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg);
+  }
+
+  .footer-logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.25em;
+    color: var(--text-dim);
+  }
+
+  .footer-copy {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    opacity: 0.5;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 900px) {
+    nav, .hero, .integrations-strip, .cta-section, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .connect-section { grid-template-columns: 1fr; }
+    .connect-left { border-right: none; border-bottom: 1px solid var(--line); padding: 3rem 1.5rem; }
+    .connect-right { padding: 3rem 1.5rem; }
+    .stats { grid-template-columns: 1fr; }
+    .stat { border-right: none; border-bottom: 1px solid var(--line); padding: 2rem 1.5rem; }
+    .cta-section { flex-direction: column; gap: 2.5rem; align-items: flex-start; }
+    .waitlist-form input { width: 200px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">CONDUIT</div>
+  <div class="nav-right">
+    <span class="nav-tag">Integration Infrastructure / B2B</span>
+    <a class="nav-cta" href="#">Request Demo</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-label">AI Integration Middleware</div>
+  <h1>Connect AI<br>to <span class="accent">Everything</span><br>You Already Use.</h1>
+  <p class="hero-sub">Conduit is the middleware layer that lets startups <strong>plug AI capabilities into existing tools, CRMs, and workflows</strong> — without heavy engineering or rebuilding your stack.</p>
+</section>
+
+<div class="integrations-strip">
+  <span class="strip-label">Works with</span>
+  <div class="strip-divider"></div>
+  <div class="integration-items">
+    <span class="integration-item">Salesforce</span>
+    <span class="integration-item">HubSpot</span>
+    <span class="integration-item">Slack</span>
+    <span class="integration-item">Notion</span>
+    <span class="integration-item">Linear</span>
+    <span class="integration-item">Zapier</span>
+    <span class="integration-item">Airtable</span>
+    <span class="integration-item">+ 40 more</span>
+  </div>
+</div>
+
+<section class="connect-section">
+  <div class="connect-left">
+    <div class="section-label">// The Problem</div>
+    <h2>AI Capabilities<br>Stuck in Silos</h2>
+    <p>Most startups have the models. They don't have the pipes. Connecting AI to your CRM, your ticketing system, your comms tools — that's weeks of custom integration work that shouldn't exist. Conduit eliminates it.</p>
+  </div>
+  <div class="connect-right">
+    <div class="section-label">// How Conduit Works</div>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <h4>Connect Your Tools</h4>
+          <p>OAuth-based connections to your existing stack in under 5 minutes. No webhooks, no custom code.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <h4>Define AI Actions</h4>
+          <p>Map what you want AI to do — summarise, classify, generate, route — across any connected tool.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <h4>Deploy to Workflows</h4>
+          <p>Push AI actions live into your existing workflows. Your team uses the same tools, but smarter.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num">5<span>min</span></div>
+    <div class="stat-label">First Integration</div>
+    <div class="stat-desc">First tool connected and AI action live in under 5 minutes.</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">48<span>+</span></div>
+    <div class="stat-label">Native Connectors</div>
+    <div class="stat-desc">Pre-built integrations across CRM, comms, project, and data tools.</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">0<span>×</span></div>
+    <div class="stat-label">Rearchitecting</div>
+    <div class="stat-desc">No changes to your existing stack. Conduit wraps what you already have.</div>
+  </div>
+</div>
+
+<section class="cta-section">
+  <div class="cta-left">
+    <h2>Stop<br><span>Engineering</span><br>Integrations.</h2>
+    <p>Join startups that ship AI workflows in hours, not sprints.</p>
+  </div>
+  <div class="waitlist-form">
+    <input type="email" placeholder="work@company.com" />
+    <button>Request Demo →</button>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">CONDUIT</div>
+  <div class="footer-copy">© 2025 Conduit Infrastructure. All rights reserved.</div>
+</footer>
+
+</body>
+</html>
